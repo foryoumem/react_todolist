@@ -20,6 +20,7 @@ export default function Root() {
       id: todolist.length > 0 ? todolist[todolist.length - 1].id + 1 : 1,
       title: inputTextValue,
       create_time: getCurrentTime(),
+      complete_time: ""
     }
 
     todolist.push(todo)
@@ -29,8 +30,22 @@ export default function Root() {
   }
 
   const deleteButtonEvent = (todo, event) => {
-    console.log(todo)
     setTodolist(todolist.filter(item => item.id !== todo.id))
+  }
+
+  const todoCheckEvent = (todo, event) => {
+    const isChecked = event.target.checked
+    if (isChecked) {
+      console.log("check")
+      todo.complete_time = getCurrentTime()
+    }
+    else {
+      console.log("nocheck")
+      todo.complete_time = ""
+    }
+    
+    setTodolist(todolist.map(item => item.id === todo.id ? todo : item))
+    console.log(todolist)
   }
 
   return (
@@ -44,7 +59,7 @@ export default function Root() {
           todolist.map(iter => {
             return (
               <div className="todo-item" key={iter.id}>
-                <input className="todo-check" type="checkbox" onClick={() => { }}></input>
+                <input className="todo-check" type="checkbox" onClick={(event) => todoCheckEvent(iter, event)}></input>
                 <Link className="todo-text" to={host + "/details/" + iter.id} state={iter}>
                   {iter.title}
                 </Link>

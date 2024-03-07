@@ -13,7 +13,7 @@ export default function Detail() {
     <div className="todo-detail">
       <div>제목: {data.title}</div>
       <div>작성: {data.create_time}</div>
-      <div>완료: </div>
+      <div>완료: {data.complete_time}</div>
     </div>
   )
 }
