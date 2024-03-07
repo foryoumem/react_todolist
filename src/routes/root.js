@@ -1,8 +1,95 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { getCurrentTime } from '../lib/time';
+import { styled } from 'styled-components'
 
 const host = "http://localhost:3000"
+
+const HeaderArea = styled.h1`
+  font-size: 2em;
+  text-align: center;
+  color: #333;
+`
+
+const InputArea = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+`;
+
+const TodoArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  padding: 20px;
+  border-top: 1px solid #dcdcdc;
+`
+
+const TodoInput = styled.input`
+  flex: 1;
+  margin-left: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+`
+
+const TodoAddButton = styled.button`
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+  font-size: 16px;
+  color: white;
+  background: #007BFF;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+`
+
+const TodoItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  width: 100%;
+`
+
+const TodoCheckbox = styled.input.attrs({ type: 'checkbox' })`
+  margin-right: 10px;
+`
+
+const TodoLink = styled(Link)`
+  flex-grow: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+
+const TodoLinkthrough = styled(Link)`
+  flex-grow: 1;
+  text-decoration: line-through;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+
+const TodoDeleteButton = styled.button`
+  margin-left: 10px;
+  padding: 5px;
+  color: white;
+  background: #ff0000;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+`
 
 export default function Root() {
   // 버튼을 누를때 document를 사용하지 않고 Todo 입력창의 내용을 받을 방법이 없어서 만듬
@@ -48,27 +135,36 @@ export default function Root() {
     console.log(todolist)
   }
 
+ 
+
   return (
     <div className="App">
-      <div className="input-area">
-        <input className="input-text" value={inputTextValue} onChange={inputTextEvent}></input>
-        <button className="input-add" onClick={addButtonEvent}>추가</button>
-      </div>
-      <div className="todo-area">
+      <HeaderArea>Todolist</HeaderArea>
+      <InputArea>
+        <TodoInput value={inputTextValue} onChange={inputTextEvent}></TodoInput>
+        <TodoAddButton onClick={addButtonEvent}>추가</TodoAddButton>
+      </InputArea>
+      <TodoArea>
         {
           todolist.map(iter => {
             return (
-              <div className="todo-item" key={iter.id}>
-                <input className="todo-check" type="checkbox" onClick={(event) => todoCheckEvent(iter, event)}></input>
-                <Link className="todo-text" to={host + "/details/" + iter.id} state={iter}>
-                  {iter.title}
-                </Link>
-                <button className="todo-delete" onClick={(event) => deleteButtonEvent(iter, event)}>삭제</button>
-              </div>
+              <TodoItem key={iter.id}>
+                <TodoCheckbox type="checkbox" onClick={(event) => todoCheckEvent(iter, event)}></TodoCheckbox>
+                {
+                  iter.complete_time === "" ?
+                  <TodoLink to={host + "/details/" + iter.id} state={iter}>
+                    {iter.title}
+                  </TodoLink> : 
+                  <TodoLinkthrough to={host + "/details/" + iter.id} state={iter}>
+                    {iter.title}
+                  </TodoLinkthrough>
+                }
+                <TodoDeleteButton onClick={(event) => deleteButtonEvent(iter, event)}>삭제</TodoDeleteButton>
+              </TodoItem>
             )
           })
         }
-      </div>
+      </TodoArea>
     </div>
   );
 }
