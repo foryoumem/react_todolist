@@ -1,7 +1,6 @@
 import { BrowserRouter, createBrowserRouter, Route, Routes } from 'react-router-dom';
 import Root from "./routes/root.js";
 import Detail from './routes/details.js';
-import { useState } from 'react';
 
 const router = createBrowserRouter([
   {
@@ -14,16 +13,12 @@ const router = createBrowserRouter([
   }
 ])
 
-
-
 function App() {
-    const [todolist, setTodolist] = useState([])
-
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Root list={todolist} set={setTodolist} />} />
-                <Route path="/details/:detailsId" element={<Detail list={todolist} set={setTodolist} />} />
+                <Route path="/" element={<Root />} />
+                <Route path="/details/:detailsId" element={<Detail />} />
             </Routes>
         </BrowserRouter>
     )

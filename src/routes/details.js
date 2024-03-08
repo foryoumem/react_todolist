@@ -58,7 +58,7 @@ const DeleteButton = styled(Link)`
   }
 `
 
-export default function Detail(props) {
+export default function Detail() {
 
   const params = useParams()
   const detaildId = params.detailsId
@@ -67,11 +67,13 @@ export default function Detail(props) {
   const data = location.state
 
   const deleteButtonEvent = () => {
-    props.set(props.list.filter(item => item.id !== parseInt(detaildId)))
+    const todolist = JSON.parse(localStorage.getItem("todolist"))
+    const list = todolist.filter(item => item.id !== detaildId)
+    localStorage.setItem("todolist", JSON.stringify(list))
   }
   
   return (
-    <TodoDetail className="todo-detail">
+    <TodoDetail>
       <div>
       <BackButton to="http://localhost:3000/">뒤로가기</BackButton>
       <DeleteButton to="http://localhost:3000/" onClick={deleteButtonEvent}>삭제</DeleteButton>

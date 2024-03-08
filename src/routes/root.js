@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useDeferredValue, useEffect, useState } from 'react';
 import { getCurrentTime } from '../lib/time';
 import { styled } from 'styled-components'
 
@@ -94,29 +94,40 @@ const TodoDeleteButton = styled.button`
 export default function Root(props) {
   // 버튼을 누를때 document를 사용하지 않고 Todo 입력창의 내용을 받을 방법이 없어서 만듬
   const [inputTextValue, setInputTextValue] = useState("")
+  const [todolist, setTodolist] = useState([])
 
   // Todo 입력창의 내용이 바뀔때마다 갱신
   const inputTextEvent = (event) => {
     setInputTextValue(event.target.value)
   }
 
+  const initTodolist = () => {
+    const initData = localStorage.getItem("todolist")
+
+    if (initData) {
+      setTodolist(JSON.parse(initData))
+    }
+  }
+
   
   const addButtonEvent = (event) => {
     const todo = {
-      id: props.list.length > 0 ? props.list[props.list.length - 1].id + 1 : 1,
+      id: todolist.length > 0 ? todolist[todolist.length - 1].id + 1 : 1,
       title: inputTextValue,
       create_time: getCurrentTime(),
       complete_time: ""
     }
     
-    props.set([...props.list, todo])
+    const list = [...todolist, todo]
+    setTodolist(list)
+    localStorage.setItem("todolist", JSON.stringify(list))
     setInputTextValue("")
   }
 
   const deleteButtonEvent = (todo, event) => {
-    props.set(props.list.filter((item) => {
-      return item.id !== todo.id
-    }))
+    const list = todolist.filter(item => item.id !== todo.id)
+    setTodolist(list)
+    localStorage.setItem("todolist", JSON.stringify(list))
   }
 
   const todoCheckEvent = (todo, event) => {
@@ -128,17 +139,14 @@ export default function Root(props) {
       todo.complete_time = ""
     }
     
-    props.set(props.list.map((item) => {
-      if (item.id === todo.id) {
-        return todo
-      } else {
-        return item
-      }
-    }))
-    console.log(props.list)
+    const list = todolist.map(item => item.id === todo.id ? todo : item)
+    setTodolist(list)
+    localStorage.setItem("todolist", JSON.stringify(list))
   }
 
- 
+ useEffect(() => {
+  initTodolist()
+  }, [])
 
   return (
     <div className="App">
@@ -149,7 +157,7 @@ export default function Root(props) {
       </InputArea>
       <TodoArea>
         {
-          props.list.map(iter => {
+          todolist.map(iter => {
             return (
               <TodoItem key={iter.id}>
                 <TodoCheckbox type="checkbox" onClick={(event) => todoCheckEvent(iter, event)}></TodoCheckbox>
