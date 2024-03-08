@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { getCurrentTime } from '../lib/time';
 import { styled } from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux';
-import { todoAdd, todoDelete, todoCheck } from '../features/todolist/todolistSlice'
+import { todoAdd, todoDelete, todoCheck } from '../redux/todolist/todolistSlice'
 
 const host = "http://localhost:3000"
 
@@ -98,7 +98,6 @@ export default function Root(props) {
   const [inputTextValue, setInputTextValue] = useState("")
   const todolist = useSelector(state => state.todolist.value)
   const dispatch = useDispatch()
-  console.log(todolist)
 
   // Todo 입력창의 내용이 바뀔때마다 갱신
   const inputTextEvent = (event) => {
@@ -113,25 +112,26 @@ export default function Root(props) {
       complete_time: ""
     }
     
-    //dispatch(todoAdd(todo))
+    dispatch(todoAdd(todo))
     setInputTextValue("")
   }
 
   const deleteButtonEvent = (todo, event) => {
-    //dispatch(todoDelete(todo.id))
+    dispatch(todoDelete(todo.id))
   }
 
 
   const todoCheckEvent = (todo, event) => {
     const isChecked = event.target.checked
+    const list = {...todo}
     if (isChecked) {
-      todo.complete_time = getCurrentTime()
+      list.complete_time = getCurrentTime()
     }
     else {
-      todo.complete_time = ""
+      list.complete_time = ""
     }
     
-    //dispatch(todoCheck(todo))
+    dispatch(todoCheck(list))
   }
 
   return (
