@@ -1,17 +1,7 @@
-import { BrowserRouter, createBrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Root from "./routes/root.js";
 import Detail from './routes/details.js';
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Root />
-  },
-  {
-    path: "/details/:detailId",
-    element: <Detail />
-  }
-])
 
 function App() {
     return (

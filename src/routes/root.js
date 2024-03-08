@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useDeferredValue, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getCurrentTime } from '../lib/time';
 import { styled } from 'styled-components'
+import { useDispatch, useSelector } from 'react-redux';
+import { addTodo, deleteTodo, checkTodo } from '../actions/todo';
 
 const host = "http://localhost:3000"
 
@@ -94,21 +96,13 @@ const TodoDeleteButton = styled.button`
 export default function Root(props) {
   // 버튼을 누를때 document를 사용하지 않고 Todo 입력창의 내용을 받을 방법이 없어서 만듬
   const [inputTextValue, setInputTextValue] = useState("")
-  const [todolist, setTodolist] = useState([])
+  const todolist = useSelector(state => state)
+  const dispatch = useDispatch()
 
   // Todo 입력창의 내용이 바뀔때마다 갱신
   const inputTextEvent = (event) => {
     setInputTextValue(event.target.value)
   }
-
-  const initTodolist = () => {
-    const initData = localStorage.getItem("todolist")
-
-    if (initData) {
-      setTodolist(JSON.parse(initData))
-    }
-  }
-
   
   const addButtonEvent = (event) => {
     const todo = {
@@ -118,17 +112,14 @@ export default function Root(props) {
       complete_time: ""
     }
     
-    const list = [...todolist, todo]
-    setTodolist(list)
-    localStorage.setItem("todolist", JSON.stringify(list))
+    dispatch(addTodo(todo))
     setInputTextValue("")
   }
 
   const deleteButtonEvent = (todo, event) => {
-    const list = todolist.filter(item => item.id !== todo.id)
-    setTodolist(list)
-    localStorage.setItem("todolist", JSON.stringify(list))
+    dispatch(deleteTodo(todo.id))
   }
+
 
   const todoCheckEvent = (todo, event) => {
     const isChecked = event.target.checked
@@ -139,14 +130,8 @@ export default function Root(props) {
       todo.complete_time = ""
     }
     
-    const list = todolist.map(item => item.id === todo.id ? todo : item)
-    setTodolist(list)
-    localStorage.setItem("todolist", JSON.stringify(list))
+    dispatch(checkTodo(todo))
   }
-
- useEffect(() => {
-  initTodolist()
-  }, [])
 
   return (
     <div className="App">

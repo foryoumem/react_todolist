@@ -1,6 +1,8 @@
 import { useLocation, useParams } from "react-router-dom"
 import { Link } from "react-router-dom"
 import { styled } from "styled-components"
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteTodo } from '../actions/todo';
 
 const TodoDetail = styled.div`
   display: flex;
@@ -66,11 +68,13 @@ export default function Detail() {
   const location = useLocation()
   const data = location.state
 
+  //const data = useSelector(state => state.filter(item => item.id === detaildId))
+  //console.log(data)
+  
+  const dispatch = useDispatch()
+
   const deleteButtonEvent = () => {
-    const todolist = JSON.parse(localStorage.getItem("todolist"))
-    const list = todolist.filter(item => item.id !== detaildId)
-    console.log(list)
-    localStorage.setItem("todolist", JSON.stringify(list))
+    dispatch(deleteTodo(detaildId))
   }
   
   return (
