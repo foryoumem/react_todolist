@@ -42,34 +42,39 @@ const BackButton = styled(Link)`
   }
 `
 
-const DeleteButton = styled.button`
+const DeleteButton = styled(Link)`
   display: inline-block;
   margin-left: 10px;
   margin-bottom: 20px;
   padding: 10px 20px;
   border-radius: 5px;
-  color: white;
-  background: #ff0000;
-  cursor: pointer;
-  flex-shrink: 0;
+  text-decoration: none;
+  background-color: #d9534f;
+  color: #fff;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #c9302c;
+  }
 `
 
-export default function Detail() {
+export default function Detail(props) {
 
   const params = useParams()
-  console.log(params)
+  const detaildId = params.detailsId
 
   const location = useLocation()
   const data = location.state
-  console.log(data)
 
+  const deleteButtonEvent = () => {
+    props.set(props.list.filter(item => item.id !== parseInt(detaildId)))
+  }
   
-
   return (
     <TodoDetail className="todo-detail">
       <div>
       <BackButton to="http://localhost:3000/">뒤로가기</BackButton>
-      <DeleteButton>삭제</DeleteButton>
+      <DeleteButton to="http://localhost:3000/" onClick={deleteButtonEvent}>삭제</DeleteButton>
       </div>
       <Content>{data.title}</Content>
       <ContentDataArea>

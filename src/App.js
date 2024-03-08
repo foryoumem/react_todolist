@@ -23,7 +23,7 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Root list={todolist} set={setTodolist} />} />
-                <Route path="/details/:detailsID" element={<Detail />} />
+                <Route path="/details/:detailsId" element={<Detail list={todolist} set={setTodolist} />} />
             </Routes>
         </BrowserRouter>
     )
