@@ -91,10 +91,9 @@ const TodoDeleteButton = styled.button`
   flex-shrink: 0;
 `
 
-export default function Root() {
+export default function Root(props) {
   // 버튼을 누를때 document를 사용하지 않고 Todo 입력창의 내용을 받을 방법이 없어서 만듬
   const [inputTextValue, setInputTextValue] = useState("")
-  const [todolist, setTodolist] = useState([])
 
   // Todo 입력창의 내용이 바뀔때마다 갱신
   const inputTextEvent = (event) => {
@@ -104,35 +103,39 @@ export default function Root() {
   
   const addButtonEvent = (event) => {
     const todo = {
-      id: todolist.length > 0 ? todolist[todolist.length - 1].id + 1 : 1,
+      id: props.list.length > 0 ? props.list[props.list.length - 1].id + 1 : 1,
       title: inputTextValue,
       create_time: getCurrentTime(),
       complete_time: ""
     }
-
-    todolist.push(todo)
     
-    setTodolist(todolist)
+    props.set([...props.list, todo])
     setInputTextValue("")
   }
 
   const deleteButtonEvent = (todo, event) => {
-    setTodolist(todolist.filter(item => item.id !== todo.id))
+    props.set(props.list.filter((item) => {
+      return item.id !== todo.id
+    }))
   }
 
   const todoCheckEvent = (todo, event) => {
     const isChecked = event.target.checked
     if (isChecked) {
-      console.log("check")
       todo.complete_time = getCurrentTime()
     }
     else {
-      console.log("nocheck")
       todo.complete_time = ""
     }
     
-    setTodolist(todolist.map(item => item.id === todo.id ? todo : item))
-    console.log(todolist)
+    props.set(props.list.map((item) => {
+      if (item.id === todo.id) {
+        return todo
+      } else {
+        return item
+      }
+    }))
+    console.log(props.list)
   }
 
  
@@ -146,7 +149,7 @@ export default function Root() {
       </InputArea>
       <TodoArea>
         {
-          todolist.map(iter => {
+          props.list.map(iter => {
             return (
               <TodoItem key={iter.id}>
                 <TodoCheckbox type="checkbox" onClick={(event) => todoCheckEvent(iter, event)}></TodoCheckbox>
@@ -187,4 +190,13 @@ reduce map split 사용해보기
 객체 구조분해할당
 
 리액트로 만들고 싶은 것 생각해오기
+*/
+
+/*
+상세페이지에서도 삭제 기능 구현
+
+1. props를 사용하여
+2. local storage를 사용하여
+3. redux를 사용하여
+
 */
