@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { getCurrentTime } from '../lib/time';
 import { styled } from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux';
-import { addTodo, deleteTodo, checkTodo } from '../actions/todo';
+import { todoAdd, todoDelete, todoCheck } from '../features/todolist/todolistSlice'
 
 const host = "http://localhost:3000"
 
@@ -96,8 +96,9 @@ const TodoDeleteButton = styled.button`
 export default function Root(props) {
   // 버튼을 누를때 document를 사용하지 않고 Todo 입력창의 내용을 받을 방법이 없어서 만듬
   const [inputTextValue, setInputTextValue] = useState("")
-  const todolist = useSelector(state => state)
+  const todolist = useSelector(state => state.todolist.value)
   const dispatch = useDispatch()
+  console.log(todolist)
 
   // Todo 입력창의 내용이 바뀔때마다 갱신
   const inputTextEvent = (event) => {
@@ -112,12 +113,12 @@ export default function Root(props) {
       complete_time: ""
     }
     
-    dispatch(addTodo(todo))
+    //dispatch(todoAdd(todo))
     setInputTextValue("")
   }
 
   const deleteButtonEvent = (todo, event) => {
-    dispatch(deleteTodo(todo.id))
+    //dispatch(todoDelete(todo.id))
   }
 
 
@@ -130,7 +131,7 @@ export default function Root(props) {
       todo.complete_time = ""
     }
     
-    dispatch(checkTodo(todo))
+    //dispatch(todoCheck(todo))
   }
 
   return (
