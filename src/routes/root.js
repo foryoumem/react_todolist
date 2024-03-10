@@ -83,11 +83,11 @@ const TodoDeleteButton = styled.button`
   flex-shrink: 0;
 `
 
-export default function Root({getData}) {
+export default function Root(database) {
   // 버튼을 누를때 document를 사용하지 않고 Todo 입력창의 내용을 받을 방법이 없어서 만듬
   const [inputTextValue, setInputTextValue] = useState("")
 
-  const data = getData()
+  const data = database.getData() || "[]"
   const [todolist, setTodolist] = useState(JSON.parse(data))
 
   // Todo 입력창의 내용이 바뀔때마다 갱신
@@ -99,12 +99,41 @@ export default function Root({getData}) {
   useEffect(() => {
     console.log("useEffect(): Dependency array의 요소 변경으로 해당 컴포넌트 그려짐")
 
+    
+    database.setData(JSON.stringify(todolist))
+
     return () => {
-      console.log("useEffect(): Dependency array의 요소 변경으로 해당 컴포넌트 지워짐")
+      console.log("useEffect(): 컴포넌트 언마운트 또는 업데이트로 지워짐")
     }
-  }, [data])
+  }, [JSON.stringify(todolist)])
 
   
+/*
+명예의 전당 배열이
+1. k보다 작으면 currentValue를 푸시 > 소트
+2. k보다 크면 currentValue가 명예의 전당 요소보다 크면 쉬프트 > 푸시
+
+발표점수 = 명예의 전당의 0번째 인덱스 
+*/
+
+  const k = 3
+  const score = [10, 100, 20, 150, 1, 100, 200]
+  const best = []
+  const answer = score.reduce((arr, currentValue) => {
+    if (best.length < k) {
+      best.push(currentValue)
+      if (best.length >= 2) best.sort((a, b) => a - b)
+    } else {    
+      best.push(currentValue)
+      best.sort((a, b) => a - b)
+      best.shift()
+    }
+    arr.push(best[0])
+    return arr
+  }, [])
+
+  console.log(answer)
+
   const addButtonEvent = (event) => {
     const todo = {
       id: todolist.length > 0 ? todolist[todolist.length - 1].id + 1 : 1,
@@ -115,14 +144,14 @@ export default function Root({getData}) {
     
     const list = [...todolist, todo]
     setTodolist(list)
-    localStorage.setItem("todolist", JSON.stringify(list))
+    //database.setData(JSON.stringify(list))
     setInputTextValue("")
   }
 
   const deleteButtonEvent = (todo, event) => {
     const list = todolist.filter(item => item.id !== todo.id)
     setTodolist(list)
-    localStorage.setItem("todolist", JSON.stringify(list))
+    //database.setData(JSON.stringify(list))
   }
 
   const todoCheckEvent = (todo, event) => {
@@ -136,7 +165,7 @@ export default function Root({getData}) {
     
     const list = todolist.map(item => item.id === todo.id ? todo : item)
     setTodolist(list)
-    localStorage.setItem("todolist", JSON.stringify(list))
+    //database.setData(JSON.stringify(list))
   }
 
   

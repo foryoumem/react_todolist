@@ -1,17 +1,16 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Root from "./routes/root.js";
 import Detail from './routes/details.js';
+import createLocalStorage from './local_storage/LocalStorage.js'
 
 function App() {
-  //const store = localStorage.getItem("todolist")
-  const getData = () => {
-    return localStorage.getItem("todolist")
-  }
+  const todolist = createLocalStorage("todolist")
+
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Root getData={getData} />} />
-                <Route path="/details/:detailsId" element={<Detail />} />
+                <Route path="/" element={<Root getData={todolist.getData} setData={todolist.setData}/>} />
+                <Route path="/details/:detailsId" element={<Detail getData={todolist.getData} setData={todolist.setData} />} />
             </Routes>
         </BrowserRouter>
     )

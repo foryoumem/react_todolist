@@ -58,7 +58,7 @@ const DeleteButton = styled(Link)`
   }
 `
 
-export default function Detail() {
+export default function Detail(database) {
 
   const params = useParams()
   const detaildId = parseInt(params.detailsId)
@@ -67,10 +67,9 @@ export default function Detail() {
   const data = location.state
 
   const deleteButtonEvent = () => {
-    const todolist = JSON.parse(localStorage.getItem("todolist"))
+    const todolist = JSON.parse(database.getData())
     const list = todolist.filter(item => item.id !== detaildId)
-    console.log(list)
-    localStorage.setItem("todolist", JSON.stringify(list))
+    database.setData(list)
   }
   
   return (
