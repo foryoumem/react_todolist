@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useDeferredValue, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getCurrentTime } from '../lib/time';
 import { styled } from 'styled-components'
 
@@ -66,15 +66,7 @@ const TodoCheckbox = styled.input.attrs({ type: 'checkbox' })`
 
 const TodoLink = styled(Link)`
   flex-grow: 1;
-  text-decoration: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`
-
-const TodoLinkthrough = styled(Link)`
-  flex-grow: 1;
-  text-decoration: line-through;
+  text-decoration: ${(props) => props.checked ? "line-through" : "none"};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -91,23 +83,26 @@ const TodoDeleteButton = styled.button`
   flex-shrink: 0;
 `
 
-export default function Root(props) {
+export default function Root({getData}) {
   // 버튼을 누를때 document를 사용하지 않고 Todo 입력창의 내용을 받을 방법이 없어서 만듬
   const [inputTextValue, setInputTextValue] = useState("")
-  const [todolist, setTodolist] = useState([])
+
+  const data = getData()
+  const [todolist, setTodolist] = useState(JSON.parse(data))
 
   // Todo 입력창의 내용이 바뀔때마다 갱신
   const inputTextEvent = (event) => {
     setInputTextValue(event.target.value)
   }
 
-  const initTodolist = () => {
-    const initData = localStorage.getItem("todolist")
+  console.log("컴포넌트 실행")
+  useEffect(() => {
+    console.log("useEffect(): Dependency array의 요소 변경으로 해당 컴포넌트 그려짐")
 
-    if (initData) {
-      setTodolist(JSON.parse(initData))
+    return () => {
+      console.log("useEffect(): Dependency array의 요소 변경으로 해당 컴포넌트 지워짐")
     }
-  }
+  }, [data])
 
   
   const addButtonEvent = (event) => {
@@ -144,9 +139,7 @@ export default function Root(props) {
     localStorage.setItem("todolist", JSON.stringify(list))
   }
 
- useEffect(() => {
-  initTodolist()
-  }, [])
+  
 
   return (
     <div className="App">
@@ -161,15 +154,9 @@ export default function Root(props) {
             return (
               <TodoItem key={iter.id}>
                 <TodoCheckbox type="checkbox" onClick={(event) => todoCheckEvent(iter, event)}></TodoCheckbox>
-                {
-                  iter.complete_time === "" ?
-                  <TodoLink to={host + "/details/" + iter.id} state={iter}>
-                    {iter.title}
-                  </TodoLink> : 
-                  <TodoLinkthrough to={host + "/details/" + iter.id} state={iter}>
-                    {iter.title}
-                  </TodoLinkthrough>
-                }
+                <TodoLink to={host + "/details/" + iter.id} state={iter} checked={iter.complete_time !== ""}>
+                  {iter.title}
+                </TodoLink>
                 <TodoDeleteButton onClick={(event) => deleteButtonEvent(iter, event)}>삭제</TodoDeleteButton>
               </TodoItem>
             )
