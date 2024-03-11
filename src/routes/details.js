@@ -67,7 +67,7 @@ export default function Detail(database) {
   const data = location.state
 
   const deleteButtonEvent = () => {
-    const todolist = JSON.parse(database.getData())
+    const todolist = database.getData()
     const list = todolist.filter(item => item.id !== detaildId)
     database.setData(list)
   }

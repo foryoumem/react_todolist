@@ -83,12 +83,12 @@ const TodoDeleteButton = styled.button`
   flex-shrink: 0;
 `
 
-export default function Root(database) {
+export default function Root({list = [], onChangeTodolist}) {
   // 버튼을 누를때 document를 사용하지 않고 Todo 입력창의 내용을 받을 방법이 없어서 만듬
   const [inputTextValue, setInputTextValue] = useState("")
 
-  const data = database.getData() || "[]"
-  const [todolist, setTodolist] = useState(JSON.parse(data))
+  const data = list
+  const [todolist, setTodolist] = useState(data)
 
   // Todo 입력창의 내용이 바뀔때마다 갱신
   const inputTextEvent = (event) => {
@@ -98,9 +98,8 @@ export default function Root(database) {
   console.log("컴포넌트 실행")
   useEffect(() => {
     console.log("useEffect(): Dependency array의 요소 변경으로 해당 컴포넌트 그려짐")
-
     
-    database.setData(JSON.stringify(todolist))
+    onChangeTodolist(todolist)
 
     return () => {
       console.log("useEffect(): 컴포넌트 언마운트 또는 업데이트로 지워짐")
@@ -111,7 +110,7 @@ export default function Root(database) {
 /*
 명예의 전당 배열이
 1. k보다 작으면 currentValue를 푸시 > 소트
-2. k보다 크면 currentValue가 명예의 전당 요소보다 크면 쉬프트 > 푸시
+2. k보다 크면 currentValue를 푸시 > 소트 해서 작은 수 0번으로 옮기고 쉬프트
 
 발표점수 = 명예의 전당의 0번째 인덱스 
 */
@@ -222,5 +221,49 @@ reduce map split 사용해보기
 1. props를 사용하여
 2. local storage를 사용하여
 3. redux를 사용하여
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+미디어 플레이어
+
+음악이나 비디오를 불러오는데,
+
+구글 스프레드 시트<< 음악, 비디오에 링크를 저장해놓고
+
+구글 스프레드 시트 <<< 이거 자체를 데이터베이스로 사용할 수 있는 기능이 있음.
+id: ~~~
+이름: ~~~
+링크: ~~~
+
+유튜브 링크를 사용자가 직접 플레이어 추가해서
+
+유튜브 링크를 반복재생 정렬 ㅇ
+
+반복재생, 정렬, <---
+
+자막< 알송api ,
+
+음악이나 비디오의 인공지능 tts 자동 자막
+
+웹페이지에 들어가면 음악과 비디오리스트가 나옴.
+
+typescript
+
+
+
+여유가 되면 브랜치 만들어서
+option! redux.thunk
 
 */
